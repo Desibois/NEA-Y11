@@ -1,27 +1,28 @@
 import random
 
 try:
-    def login(usertocheck, passtocheck):
+    # function to authenticate login, will be used later
+    def checklogin(usertocheck, passtocheck):
         access = False
-        f = open("User+Pass", "r+")
-        user = f.readline().strip()
-        passkey = f.readline().strip()
-        while user != "done":
-            if usertocheck == user and passtocheck == passkey:
-                print(f"Welcome {user}. You have been authorised to play.\n")
-                access = True
-                break
+        with open("User+Pass", "r+") as f:
             user = f.readline().strip()
             passkey = f.readline().strip()
+            while user != "done":
+                if usertocheck == user and passtocheck == passkey:
+                    print(f"Welcome {user}. You have been authorised to play.\n")
+                    access = True
+                    break
+                user = f.readline().strip()
+                passkey = f.readline().strip()
         return access
 
-
-    def checklogin(x):
+    # function for logging in
+    def login(x):
         tries = 2
         while tries != -1:
-            p1_user = input("Player " + str(x) + " username: ")
-            p1_pass = input("Player " + str(x) + " password: ")
-            passed = login(p1_user, p1_pass)
+            p1_user = input(f"Player{x} username: ")
+            p1_pass = input(f"Player{x} password: ")
+            passed = checklogin(p1_user, p1_pass)
             if passed:
                 player_dict.update({p1_user: 0})
                 return True
@@ -32,7 +33,7 @@ try:
             print("You have run out of tries.")
             quit()
 
-
+    # This is where the dice are rolled and scores are calculated
     def play():
         dice1 = random.randint(1, 6)
         dice2 = random.randint(1, 6)
@@ -48,19 +49,16 @@ try:
             score = 0
         return score
 
-
+    # Finds the highest score
     def max_score(dictionary):
-        val = max(dictionary, key=dictionary.get)
-        return val
+        return max(dictionary, key=dictionary.get)
 
-
+    # Saves winner to the Winners file
     def save(wname, score):
-        f = open("Winners", "a")
-        f.write(wname + "\n")
-        f.write(str(score) + "\n")
-        f.close()
+        with open("Winners", "a") as f:
+            f.write(f"{wname}\n{score}\n")
 
-
+    # Retrieves and prints top 5 players of all time
     def top_five():
         scores = {}
         with open("Winners", "r") as file:
@@ -77,25 +75,25 @@ try:
     player_dict = {}
     players = int(input("How many players are playing: "))
     rounds = int(input("How many rounds: "))
-    for i in range(1, players+1):
-        checklogin(i)
-    player_list = list(player_dict.keys())
-    print(player_list)
-    for y in range(1, rounds+1):
+    for i in range(1, players+1):  # Repeats for how many players there are
+        login(i)
+    player_list = list(player_dict.keys())  # Creates a list of all the players from the dictionary
+    for y in range(1, rounds+1):  # Repeats for how many rounds there are
         for i in range(0, len(player_list)):
-            output = play()
-            output = player_dict[player_list[i]] + output
-            player_dict.update({player_list[i]: output})
+            result = play()
+            result = player_dict[player_list[i]] + result
+            player_dict.update({player_list[i]: result})
             i += 1
         print(f"Scores for round {y}: ")
         for name, num in player_dict.items():
             print(f"{name}: {num}")
         print(f"\n The winner so far is: {max_score(player_dict)}.")
-
+# After all the rounds are finished
     print(f"\n \n The winner is {max_score(player_dict)} with {player_dict[max_score(player_dict)]} points. \n")
     save(max_score(player_dict), player_dict[max_score(player_dict)])
     print("Top 5 players are: ")
     top_five()
 
+# This prevents all input errors from occurring.
 except ValueError:
     print("Incorrect input. Program will terminate now")
