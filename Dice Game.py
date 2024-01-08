@@ -96,7 +96,7 @@ try:
 # After all the rounds are finished
     print(f"\n \n The winner is {max_score(player_dict)} with {player_dict[max_score(player_dict)]} points. \n")
     save(max_score(player_dict), player_dict[max_score(player_dict)])
-    print("Top 5 players are: ")
+    print("Top 5 winners are: ")
     top_five()
 
 # This prevents all input errors from occurring.
