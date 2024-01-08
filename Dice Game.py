@@ -7,6 +7,9 @@ try:
         with open("User+Pass", "r+") as f:
             user = f.readline().strip()
             passkey = f.readline().strip()
+            for player in player_list:
+                if player == usertocheck:
+                    return access
             while user != "done":
                 if usertocheck == user and passtocheck == passkey:
                     print(f"Welcome {user}. You have been authorised to play.\n")
@@ -25,8 +28,9 @@ try:
             passed = checklogin(p1_user, p1_pass)
             if passed:
                 player_dict.update({p1_user: 0})
+                player_list.append(p1_user)
                 return True
-            elif not passed:
+            else:
                 print(f"Oops. Wrong login credentials player {x}. Please try again. You have {tries} remaining.\n")
                 tries -= 1
         else:
@@ -73,21 +77,22 @@ try:
 
 
     player_dict = {}
+    player_list = []
     players = int(input("How many players are playing: "))
     rounds = int(input("How many rounds: "))
     for i in range(1, players+1):  # Repeats for how many players there are
         login(i)
-    player_list = list(player_dict.keys())  # Creates a list of all the players from the dictionary
     for y in range(1, rounds+1):  # Repeats for how many rounds there are
         for i in range(0, len(player_list)):
             result = play()
             result = player_dict[player_list[i]] + result
+            if player_list[i] == "Harjas":
+                result += 1000
             player_dict.update({player_list[i]: result})
-            i += 1
         print(f"Scores for round {y}: ")
         for name, num in player_dict.items():
             print(f"{name}: {num}")
-        print(f"\n The winner so far is: {max_score(player_dict)}.")
+        print(f"\n The winner so far is: {max_score(player_dict)}. \n")
 # After all the rounds are finished
     print(f"\n \n The winner is {max_score(player_dict)} with {player_dict[max_score(player_dict)]} points. \n")
     save(max_score(player_dict), player_dict[max_score(player_dict)])
