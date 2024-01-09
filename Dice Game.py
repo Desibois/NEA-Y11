@@ -92,7 +92,7 @@ try:
         print(f"Scores for round {y}: ")
         for name, num in player_dict.items():
             print(f"{name}: {num}")
-        print(f"\n The winner so far is: {max_score(player_dict)}. \n")
+        print(f"\n The winner so far is {max_score(player_dict)}. \n")
 # After all the rounds are finished
     print(f"\n \n The winner is {max_score(player_dict)} with {player_dict[max_score(player_dict)]} points. \n")
     save(max_score(player_dict), player_dict[max_score(player_dict)])
